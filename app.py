@@ -6,7 +6,7 @@ from werkzeug.security import generate_password_hash, check_password_hash
 import sqlite3, os
 
 app = Flask(__name__)
-app.secret_key = 'fittingatelier2024'
+app.secret_key = os.environ["SECRET_KEY"]
 
 DB = 'fitting_atelier.db'
 
