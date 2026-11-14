@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="container" style="text-align:center; padding-top: 80px;">
+  <div class="badge">Welcome</div>
+  <h1>Fitting <em>Atelier</em></h1>
+  <p style="font-size:15px; color:#5a4a3a; max-width:500px; margin: 16px auto 40px; line-height:1.8;">
+    Your personal wardrobe app. Catalog your closet, build outfits, and get dressed with confidence every day.
+  </p>
+  <p style="font-size: 13px; color: #7a6a5a; margin-bottom: 32px; letter-spacing:1px; text-transform:uppercase;">By Faiza Sarker</p>
+  <div style="display:flex; gap:16px; justify-content:center;">
+    <a href="{{ url_for('register') }}" class="btn btn-gold">Get Started</a>
+    <a href="{{ url_for('login') }}" class="btn">Log In</a>
+  </div>
+</div>
+{% endblock %}

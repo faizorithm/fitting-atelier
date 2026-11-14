@@ -1,0 +1,32 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="container">
+  <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:8px;">
+    <div>
+      <div class="badge">My Outfits</div>
+      <h1>Your <em>Looks</em></h1>
+    </div>
+    <a href="{{ url_for('add_outfit') }}" class="btn btn-gold">+ Build Outfit</a>
+  </div>
+
+  {% if outfits %}
+    {% for outfit in outfits %}
+    <div class="card">
+      <div class="card-info">
+        <h3>{{ outfit.outfit_name }}</h3>
+        <div class="card-tags">
+          {% if outfit.outfit_occasion %}<span class="tag">{{ outfit.outfit_occasion }}</span>{% endif %}
+          {% if outfit.outfit_hijab_color %}<span class="tag">Hijab: {{ outfit.outfit_hijab_color }}</span>{% endif %}
+        </div>
+      </div>
+      <a href="{{ url_for('delete_outfit', outfit_id=outfit.outfit_id) }}" class="btn btn-danger btn-sm">Remove</a>
+    </div>
+    {% endfor %}
+  {% else %}
+    <div class="empty">
+      <p>No outfits yet — build your first look!</p>
+      <a href="{{ url_for('add_outfit') }}" class="btn btn-gold">+ Build Outfit</a>
+    </div>
+  {% endif %}
+</div>
+{% endblock %}
