@@ -1,217 +1,305 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Fitting Atelier</title>
-  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
-  <style>
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-    body { background: #f5edd8; font-family: 'Lato', sans-serif; min-height: 100vh; }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fitting Atelier</title>
 
-    nav {
-      background: #2a1f14;
-      padding: 16px 40px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-    }
-    nav .logo {
-      font-family: 'Playfair Display', serif;
-      font-size: 24px;
-      font-weight: 700;
-      color: #f5edd8;
-    }
-    nav .logo em { font-style: italic; color: #e8a84a; }
-    nav .by {
-      font-size: 11px;
-      color: #7a6a5a;
-      letter-spacing: 1px;
-      text-transform: uppercase;
-      margin-top: 2px;
-    }
-    nav ul {
-      list-style: none;
-      display: flex;
-      gap: 28px;
-      align-items: center;
-    }
-    nav ul a {
-      text-decoration: none;
-      color: #d4c4a8;
-      font-size: 13px;
-      font-weight: 400;
-      letter-spacing: 1px;
-      text-transform: uppercase;
-      transition: color 0.2s;
-    }
-    nav ul a:hover { color: #e8a84a; }
-    nav ul .btn-nav {
-      background: #e8a84a;
-      color: #1a1410;
-      padding: 7px 18px;
-      border-radius: 2px;
-      font-weight: 700;
-    }
-    nav ul .btn-nav:hover { background: #d4943a; color: #1a1410; }
+    <style>
+        @font-face {
+            font-family: 'PerandoryCondensed';
+            src: url("{{ url_for('static', filename='Perandory-Condensed.otf') }}");
+        }
 
-    .flash-messages { padding: 12px 40px 0; }
-    .flash { padding: 10px 16px; border-radius: 2px; font-size: 13px; margin-bottom: 8px; }
-    .flash.success { background: #d4edda; color: #155724; }
-    .flash.error   { background: #f8d7da; color: #721c24; }
+        @font-face {
+            font-family: 'PerandoryRegular';
+            src: url("{{ url_for('static', filename='Perandory-Regular.otf') }}");
+        }
 
-    .container { max-width: 900px; margin: 0 auto; padding: 48px 24px; }
+        @font-face {
+            font-family: 'PerandorySemiCondensed';
+            src: url("{{ url_for('static', filename='Perandory-Semi-Condensed.otf') }}");
+        }
 
-    h1 {
-      font-family: 'Playfair Display', serif;
-      font-size: 36px;
-      font-weight: 700;
-      color: #1a1410;
-      margin-bottom: 8px;
-    }
-    h1 em { font-style: italic; color: #7a3b1e; }
+        * {
+            box-sizing: border-box;
+        }
 
-    .badge {
-      display: inline-block;
-      background: #e8a84a;
-      color: #1a1410;
-      font-size: 11px;
-      font-weight: 700;
-      letter-spacing: 2px;
-      text-transform: uppercase;
-      padding: 5px 14px;
-      border-radius: 2px;
-      margin-bottom: 28px;
-    }
+        body {
+            margin: 0;
+            min-height: 100vh;
+            font-family: Georgia, serif;
+            transition: background-color 0.3s, color 0.3s;
+        }
 
-    .btn {
-      display: inline-block;
-      background: #2a1f14;
-      color: #f5edd8;
-      padding: 10px 24px;
-      border-radius: 2px;
-      font-size: 13px;
-      font-weight: 700;
-      letter-spacing: 1px;
-      text-transform: uppercase;
-      text-decoration: none;
-      border: none;
-      cursor: pointer;
-      transition: background 0.2s;
-    }
-    .btn:hover { background: #7a3b1e; }
-    .btn-gold { background: #e8a84a; color: #1a1410; }
-    .btn-gold:hover { background: #d4943a; }
-    .btn-sm { padding: 6px 14px; font-size: 11px; }
-    .btn-danger { background: #c0392b; }
-    .btn-danger:hover { background: #922b21; }
+        /* DARK BACKGROUND */
+        body:not(.light) {
+            background:
+                #1a1410
+                url("{{ url_for('static', filename='background.png') }}")
+                center center / cover fixed no-repeat;
+            color: #f0e6d3;
+        }
 
-    form .field { margin-bottom: 18px; }
-    form label { display: block; font-size: 12px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; color: #5a4a3a; margin-bottom: 6px; }
-    form input[type=text], form input[type=email], form input[type=password], form input[type=number], form select, form input[type=float] {
-      width: 100%;
-      padding: 10px 14px;
-      border: 1px solid #d4c4a8;
-      border-radius: 2px;
-      font-size: 14px;
-      font-family: 'Lato', sans-serif;
-      background: #fffdf8;
-      color: #1a1410;
-    }
-    form input:focus, form select:focus { outline: none; border-color: #e8a84a; }
+        /* LIGHT BACKGROUND */
+        body.light {
+            background:
+                linear-gradient(
+                    rgba(255,245,240,0.25),
+                    rgba(255,245,240,0.25)
+                ),
+                url("{{ url_for('static', filename='lightbackground.png') }}")
+                center center / cover fixed no-repeat;
+            color: #5b292b;
+        }
 
-    .card {
-      background: #fffdf8;
-      border: 1px solid #e8dcc8;
-      border-radius: 4px;
-      padding: 20px 24px;
-      margin-bottom: 14px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-    }
-    .card-info h3 { font-family: 'Playfair Display', serif; font-size: 18px; color: #1a1410; }
-    .card-info p  { font-size: 12px; color: #7a6a5a; margin-top: 4px; }
-    .card-tags { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 8px; }
-    .tag {
-      background: #f5edd8;
-      border: 1px solid #d4c4a8;
-      border-radius: 2px;
-      font-size: 11px;
-      padding: 3px 10px;
-      color: #5a4a3a;
-    }
+        /* NAVBAR */
+        nav {
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 24px;
+            padding: 18px 40px;
+            border-bottom: 1px solid;
+        }
 
-    .checkbox-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-      gap: 10px;
-      margin-top: 8px;
-    }
-    .checkbox-grid label {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      background: #fffdf8;
-      border: 1px solid #e8dcc8;
-      border-radius: 2px;
-      padding: 10px 14px;
-      cursor: pointer;
-      font-size: 13px;
-      text-transform: none;
-      letter-spacing: 0;
-      font-weight: 400;
-      color: #3a2a1a;
-    }
-    .checkbox-grid input[type=checkbox] { accent-color: #e8a84a; }
+        nav .logo {
+            font-family: 'PerandoryCondensed', Georgia, serif;
+            font-size: 38px;
+            line-height: 1;
+            text-decoration: none;
+            white-space: nowrap;
+        }
 
-    .empty { text-align: center; padding: 60px 20px; color: #7a6a5a; }
-    .empty p { font-size: 15px; margin-bottom: 20px; }
+        nav .logo em {
+            font-style: normal;
+        }
 
-    footer {
-      background: #2a1f14;
-      text-align: center;
-      padding: 20px;
-      font-size: 12px;
-      color: #7a6a5a;
-      letter-spacing: 1px;
-      margin-top: 60px;
-    }
-  </style>
+        nav .by {
+            display: block;
+            font-family: 'PerandoryRegular', Georgia, serif;
+            font-size: 15px;
+            margin-top: 8px;
+        }
+
+        nav ul {
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            flex-wrap: wrap;
+            gap: 28px;
+            list-style: none;
+            margin: 0;
+            padding: 0;
+        }
+
+        nav ul a {
+            font-family: 'PerandoryCondensed', Georgia, serif;
+            font-size: 23px;
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+
+        nav .btn-nav {
+            display: inline-block;
+            padding: 10px 22px;
+            border-radius: 9px;
+            border: 1px solid;
+        }
+
+        #theme-toggle {
+            font-family: 'PerandoryCondensed', Georgia, serif;
+            font-size: 22px;
+            padding: 9px 18px;
+            border-radius: 9px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        /* DARK NAVBAR */
+        body:not(.light) nav {
+            background: #2a1f14;
+            border-color: #c9a97a;
+        }
+
+        body:not(.light) nav .logo,
+        body:not(.light) nav ul a {
+            color: #f0e6d3;
+        }
+
+        body:not(.light) nav .logo em,
+        body:not(.light) nav .by {
+            color: #c9a97a;
+        }
+
+        body:not(.light) nav .btn-nav {
+            background: #650f1c;
+            color: #f0e6d3;
+            border-color: #c9a97a;
+        }
+
+        body:not(.light) #theme-toggle {
+            background: #650f1c;
+            color: #f0e6d3;
+            border: 1px solid #c9a97a;
+        }
+
+        /* LIGHT NAVBAR */
+        body.light nav {
+            background: #fff5f0;
+            border-color: #b77b70;
+        }
+
+        body.light nav .logo,
+        body.light nav ul a {
+            color: #8b1e2d;
+        }
+
+        body.light nav .logo em,
+        body.light nav .by {
+            color: #b77b70;
+        }
+
+        body.light nav .btn-nav {
+            background: #8b1e2d;
+            color: #fff5f0;
+            border-color: #b77b70;
+        }
+
+        body.light #theme-toggle {
+            background: #8b1e2d;
+            color: #fff5f0;
+            border: 1px solid #b77b70;
+        }
+
+        nav ul a:hover {
+            opacity: 0.75;
+        }
+
+        /* CONTENT */
+        main {
+            width: 100%;
+            min-height: 70vh;
+        }
+
+        /* FOOTER */
+        footer {
+            padding: 28px 20px;
+            text-align: center;
+            border-top: 1px solid;
+            font-family: 'PerandoryRegular', Georgia, serif;
+            font-size: 17px;
+        }
+
+        body:not(.light) footer {
+            background: #2a1f14;
+            color: #c9a97a;
+            border-color: #c9a97a;
+        }
+
+        body.light footer {
+            background: #fff5f0;
+            color: #8b1e2d;
+            border-color: #b77b70;
+        }
+
+        /* MOBILE */
+        @media (max-width: 700px) {
+            nav {
+                flex-direction: column;
+                padding: 20px;
+                gap: 20px;
+            }
+
+            nav .brand {
+                text-align: center;
+            }
+
+            nav ul {
+                justify-content: center;
+                gap: 15px;
+            }
+
+            nav ul a {
+                font-size: 20px;
+            }
+        }
+    </style>
+
+    <script>
+        // Apply saved theme before the page renders
+        if (localStorage.getItem('theme') === 'light') {
+            document.documentElement.classList.add('light');
+        }
+    </script>
+
 </head>
+
 <body>
 
-<nav>
-  <div>
-    <div class="logo">Fitting <em>Atelier</em></div>
-    <div class="by">By Faiza Sarker</div>
-  </div>
-  <ul>
-    <li><a href="{{ url_for('home') }}">Home</a></li>
-    {% if session.get('user_id') %}
-      <li><a href="{{ url_for('wardrobe') }}">Wardrobe</a></li>
-      <li><a href="{{ url_for('outfits') }}">Outfits</a></li>
-      <li><a href="{{ url_for('logout') }}" class="btn-nav">Log Out</a></li>
-    {% else %}
-      <li><a href="{{ url_for('login') }}">Log In</a></li>
-      <li><a href="{{ url_for('register') }}" class="btn-nav">Register</a></li>
-    {% endif %}
-  </ul>
-</nav>
+    <nav>
+        <div class="brand">
+            <a href="{{ url_for('home') }}" class="logo">
+                Fitting <em>Atelier</em>
+            </a>
+            <span class="by">By Faiza Sarker</span>
+        </div>
 
-{% with messages = get_flashed_messages(with_categories=true) %}
-  {% if messages %}
-    <div class="flash-messages">
-      {% for category, message in messages %}
-        <div class="flash {{ category }}">{{ message }}</div>
-      {% endfor %}
-    </div>
-  {% endif %}
-{% endwith %}
+        <ul>
+            <li>
+                <a href="{{ url_for('home') }}">Home</a>
+            </li>
 
-{% block content %}{% endblock %}
+            <li>
+                <a href="{{ url_for('login') }}">Log In</a>
+            </li>
 
-<footer>Fitting Atelier &mdash; By Faiza Sarker &mdash; Database Design Project</footer>
+            <li>
+                <a href="{{ url_for('register') }}" class="btn-nav">
+                    Register
+                </a>
+            </li>
+
+            <li>
+                <button type="button" id="theme-toggle" onclick="toggleTheme()">
+                    Light
+                </button>
+            </li>
+        </ul>
+    </nav>
+
+    <main>
+        {% block content %}
+        {% endblock %}
+    </main>
+
+    <footer>
+        Fitting Atelier &copy; 2026 | Designed by Faiza Sarker
+    </footer>
+
+    <script>
+        function toggleTheme() {
+            document.body.classList.toggle('light');
+
+            const isLight = document.body.classList.contains('light');
+
+            localStorage.setItem(
+                'theme',
+                isLight ? 'light' : 'dark'
+            );
+
+            document.getElementById('theme-toggle').textContent =
+                isLight ? 'Dark' : 'Light';
+        }
+
+        // Restore saved theme on page load
+        if (localStorage.getItem('theme') === 'light') {
+            document.body.classList.add('light');
+            document.getElementById('theme-toggle').textContent = 'Dark';
+        }
+    </script>
 
 </body>
 </html>

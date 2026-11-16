@@ -1,34 +1,419 @@
-{% extends 'base.html' %}
-{% block content %}
-<div class="container">
-  <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:8px;">
-    <div>
-      <div class="badge">My Wardrobe</div>
-      <h1>Your Closet</h1>
-    </div>
-    <a href="{{ url_for('add_item') }}" class="btn btn-gold">+ Add Item</a>
-  </div>
 
-  {% if items %}
-    {% for item in items %}
-    <div class="card">
-      <div class="card-info">
-        <h3>{{ item.clothing_item_name }}</h3>
-        <p>{{ item.brand_name }} &middot; {{ item.category_name }}</p>
-        <div class="card-tags">
-          {% if item.clothing_item_color %}<span class="tag">{{ item.clothing_item_color }}</span>{% endif %}
-          {% if item.clothing_item_size %}<span class="tag">Size {{ item.clothing_item_size }}</span>{% endif %}
-          {% if item.clothing_item_price %}<span class="tag">${{ "%.2f"|format(item.clothing_item_price) }}</span>{% endif %}
+{% extends 'base.html' %}
+
+{% block content %}
+
+<style>
+@font-face {
+    font-family: 'PerandoryCondensed';
+    src: url("{{ url_for('static', filename='Perandory-Condensed.otf') }}");
+}
+
+@font-face {
+    font-family: 'PerandoryRegular';
+    src: url("{{ url_for('static', filename='Perandory-Regular.otf') }}");
+}
+
+@font-face {
+    font-family: 'PerandorySemiCondensed';
+    src: url("{{ url_for('static', filename='Perandory-Semi-Condensed.otf') }}");
+}
+
+/* PAGE LAYOUT */
+
+.wardrobe-background {
+    min-height: calc(100vh - 110px);
+    padding: 65px 25px;
+}
+
+.wardrobe-container {
+    max-width: 1100px;
+    margin: 0 auto;
+}
+
+.wardrobe-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 25px;
+    margin-bottom: 45px;
+}
+
+.wardrobe-eyebrow {
+    font-family: 'PerandorySemiCondensed', Georgia, serif;
+    font-size: 19px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+}
+
+.wardrobe-title {
+    font-family: 'PerandoryCondensed', Georgia, serif;
+    font-size: clamp(60px, 8vw, 100px);
+    font-weight: normal;
+    line-height: 1.1;
+    margin: 10px 0;
+}
+
+.wardrobe-title span {
+    color: #c9a97a;
+}
+
+.wardrobe-subtitle {
+    font-family: 'PerandoryRegular', Georgia, serif;
+    font-size: 23px;
+    margin-top: 12px;
+}
+
+.wardrobe-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+}
+
+.wardrobe-btn {
+    display: inline-block;
+    padding: 13px 23px;
+    border-radius: 10px;
+    text-decoration: none;
+    font-family: 'PerandorySemiCondensed', Georgia, serif;
+    font-size: 21px;
+    transition: 0.3s;
+    text-align: center;
+}
+
+.wardrobe-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 24px;
+}
+
+/* CLOTHING CARDS */
+
+.wardrobe-card {
+    padding: 28px;
+    border-radius: 16px;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    min-height: 220px;
+}
+
+.wardrobe-card:hover {
+    transform: translateY(-5px);
+}
+
+.wardrobe-category {
+    font-family: 'PerandorySemiCondensed', Georgia, serif;
+    font-size: 17px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 18px;
+}
+
+.wardrobe-card h3 {
+    font-family: 'PerandoryRegular', Georgia, serif;
+    font-size: 31px;
+    font-weight: normal;
+    margin-bottom: 8px;
+}
+
+.wardrobe-brand {
+    font-family: Georgia, serif;
+    font-size: 14px;
+    opacity: 0.8;
+    margin-bottom: 20px;
+}
+
+.wardrobe-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 22px;
+}
+
+.wardrobe-tag {
+    padding: 7px 11px;
+    border-radius: 20px;
+    font-family: Georgia, serif;
+    font-size: 12px;
+}
+
+.wardrobe-remove {
+    font-family: 'PerandorySemiCondensed', Georgia, serif;
+    font-size: 17px;
+    text-decoration: none;
+    align-self: flex-start;
+    transition: 0.2s;
+}
+
+.wardrobe-remove:hover {
+    text-decoration: underline;
+}
+
+/* EMPTY STATE */
+
+.wardrobe-empty {
+    text-align: center;
+    padding: 85px 25px;
+    border-radius: 18px;
+}
+
+.wardrobe-empty h2 {
+    font-family: 'PerandoryCondensed', Georgia, serif;
+    font-size: 55px;
+    font-weight: normal;
+    margin-bottom: 12px;
+}
+
+.wardrobe-empty p {
+    font-family: 'PerandoryRegular', Georgia, serif;
+    font-size: 23px;
+    margin-bottom: 30px;
+}
+
+/* DARK MODE */
+
+body:not(.light) .wardrobe-eyebrow,
+body:not(.light) .wardrobe-subtitle {
+    color: #c9a97a;
+}
+
+body:not(.light) .wardrobe-title {
+    color: #f0e6d3;
+}
+
+body:not(.light) .wardrobe-card,
+body:not(.light) .wardrobe-empty {
+    background: rgba(35,25,19,0.96);
+    border: 1px solid #c9a97a;
+    color: #f0e6d3;
+}
+
+body:not(.light) .wardrobe-card:hover {
+    box-shadow: 0 15px 35px rgba(0,0,0,0.4);
+}
+
+body:not(.light) .wardrobe-category {
+    color: #c9a97a;
+}
+
+body:not(.light) .wardrobe-tag {
+    background: #49372b;
+    border: 1px solid #84694d;
+    color: #f0e6d3;
+}
+
+body:not(.light) .wardrobe-btn-primary {
+    background: #650f1c;
+    border: 1px solid #c9a97a;
+    color: #f0e6d3;
+}
+
+body:not(.light) .wardrobe-btn-secondary {
+    background: #35251d;
+    border: 1px solid #c9a97a;
+    color: #c9a97a;
+}
+
+body:not(.light) .wardrobe-remove {
+    color: #e6a7a7;
+}
+
+/* LIGHT MODE */
+
+body.light .wardrobe-eyebrow,
+body.light .wardrobe-subtitle {
+    color: #8b1e2d;
+}
+
+body.light .wardrobe-title {
+    color: #5b292b;
+}
+
+body.light .wardrobe-title span {
+    color: #b77b70;
+}
+
+body.light .wardrobe-card,
+body.light .wardrobe-empty {
+    background: rgba(255,245,240,0.95);
+    border: 1px solid #b77b70;
+    color: #5b292b;
+}
+
+body.light .wardrobe-card:hover {
+    box-shadow: 0 15px 35px rgba(91,41,43,0.18);
+}
+
+body.light .wardrobe-category {
+    color: #8b1e2d;
+}
+
+body.light .wardrobe-tag {
+    background: #f8e2df;
+    border: 1px solid #dfb6af;
+    color: #5b292b;
+}
+
+body.light .wardrobe-btn-primary {
+    background: #8b1e2d;
+    border: 1px solid #b77b70;
+    color: #fff5f0;
+}
+
+body.light .wardrobe-btn-secondary {
+    background: #fff5f0;
+    border: 1px solid #8b1e2d;
+    color: #8b1e2d;
+}
+
+body.light .wardrobe-remove {
+    color: #a72d40;
+}
+
+/* RESPONSIVE */
+
+@media (max-width: 600px) {
+    .wardrobe-background {
+        padding: 40px 18px;
+    }
+
+    .wardrobe-header {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .wardrobe-actions {
+        width: 100%;
+    }
+
+    .wardrobe-btn {
+        flex: 1;
+    }
+}
+</style>
+
+<div class="wardrobe-background">
+    <div class="wardrobe-container">
+
+        <!-- HEADER -->
+
+        <div class="wardrobe-header">
+
+            <div>
+                <div class="wardrobe-eyebrow">
+                    My Wardrobe
+                </div>
+
+                <h1 class="wardrobe-title">
+                    Your <span>Closet</span>
+                </h1>
+
+                <p class="wardrobe-subtitle">
+                    A curated collection of your personal style
+                </p>
+            </div>
+
+            <div class="wardrobe-actions">
+
+                <a href="{{ url_for('add_item') }}"
+                   class="wardrobe-btn wardrobe-btn-primary">
+                    + Add Item
+                </a>
+
+                <a href="{{ url_for('recommendations') }}"
+                   class="wardrobe-btn wardrobe-btn-secondary">
+                    AI Stylist
+                </a>
+
+            </div>
+
         </div>
-      </div>
-      <a href="{{ url_for('delete_item', item_id=item.clothing_item_id) }}" class="btn btn-danger btn-sm">Remove</a>
+
+        <!-- CLOTHING GRID -->
+
+        {% if items %}
+
+        <div class="wardrobe-grid">
+
+            {% for item in items %}
+
+            <div class="wardrobe-card">
+
+                <div>
+                    <div class="wardrobe-category">
+                        {{ item.category_name }}
+                    </div>
+
+                    <h3>
+                        {{ item.clothing_item_name }}
+                    </h3>
+
+                    <p class="wardrobe-brand">
+                        {{ item.brand_name }}
+                    </p>
+
+                    <div class="wardrobe-tags">
+
+                        {% if item.clothing_item_color %}
+                        <span class="wardrobe-tag">
+                            {{ item.clothing_item_color }}
+                        </span>
+                        {% endif %}
+
+                        {% if item.clothing_item_size %}
+                        <span class="wardrobe-tag">
+                            Size {{ item.clothing_item_size }}
+                        </span>
+                        {% endif %}
+
+                        {% if item.clothing_item_price is not none %}
+                        <span class="wardrobe-tag">
+                            ${{ "%.2f"|format(item.clothing_item_price) }}
+                        </span>
+                        {% endif %}
+
+                    </div>
+                </div>
+
+                <a href="{{ url_for('delete_item',
+                    item_id=item.clothing_item_id) }}"
+                   class="wardrobe-remove"
+                   onclick="return confirm('Remove this item from your wardrobe?');">
+                    Remove Item
+                </a>
+
+            </div>
+
+            {% endfor %}
+
+        </div>
+
+        {% else %}
+
+        <!-- EMPTY WARDROBE -->
+
+        <div class="wardrobe-empty">
+
+            <h2>Your Closet Awaits</h2>
+
+            <p>
+                Your wardrobe is empty.
+                Start curating your collection.
+            </p>
+
+            <a href="{{ url_for('add_item') }}"
+               class="wardrobe-btn wardrobe-btn-primary">
+                + Add Your First Item
+            </a>
+
+        </div>
+
+        {% endif %}
+
     </div>
-    {% endfor %}
-  {% else %}
-    <div class="empty">
-      <p>Your wardrobe is empty — add your first piece!</p>
-      <a href="{{ url_for('add_item') }}" class="btn btn-gold">+ Add Item</a>
-    </div>
-  {% endif %}
 </div>
+
 {% endblock %}

@@ -1,15 +1,189 @@
 {% extends 'base.html' %}
+
 {% block content %}
-<div class="container" style="text-align:center; padding-top: 80px;">
-  <div class="badge">Welcome</div>
-  <h1>Fitting <em>Atelier</em></h1>
-  <p style="font-size:15px; color:#5a4a3a; max-width:500px; margin: 16px auto 40px; line-height:1.8;">
-    Your personal wardrobe app. Catalog your closet, build outfits, and get dressed with confidence every day.
-  </p>
-  <p style="font-size: 13px; color: #7a6a5a; margin-bottom: 32px; letter-spacing:1px; text-transform:uppercase;">By Faiza Sarker</p>
-  <div style="display:flex; gap:16px; justify-content:center;">
-    <a href="{{ url_for('register') }}" class="btn btn-gold">Get Started</a>
-    <a href="{{ url_for('login') }}" class="btn">Log In</a>
-  </div>
+
+<style>
+@font-face {
+    font-family: 'PerandoryCondensed';
+    src: url("{{ url_for('static', filename='Perandory-Condensed.otf') }}");
+}
+
+@font-face {
+    font-family: 'PerandoryRegular';
+    src: url("{{ url_for('static', filename='Perandory-Regular.otf') }}");
+}
+
+/* HOME LAYOUT */
+.home-background {
+    min-height: calc(100vh - 110px);
+    width: 100%;
+    background: transparent;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 60px 20px;
+}
+
+.home-card {
+    width: 100%;
+    max-width: 760px;
+    padding: 65px 45px;
+    border-radius: 18px;
+    text-align: center;
+    transition: background 0.3s ease, color 0.3s ease;
+}
+
+.home-card h1 {
+    font-family: 'PerandoryCondensed', Georgia, serif;
+    font-size: clamp(60px, 8vw, 100px);
+    font-weight: normal;
+    margin-bottom: 8px;
+}
+
+.home-subtitle {
+    font-family: 'PerandoryRegular', Georgia, serif;
+    font-size: 27px;
+    margin-bottom: 28px;
+}
+
+.home-description {
+    font-family: Georgia, serif;
+    font-size: 17px;
+    line-height: 1.9;
+    max-width: 520px;
+    margin: 0 auto 35px;
+}
+
+.home-buttons {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 18px;
+}
+
+.home-button {
+    font-family: 'PerandoryRegular', Georgia, serif;
+    font-size: 21px;
+    padding: 13px 34px;
+    border-radius: 10px;
+    text-decoration: none;
+    transition: all 0.3s ease;
+}
+
+.home-button:hover {
+    transform: translateY(-3px);
+}
+
+/* DARK MODE */
+body:not(.light) .home-card {
+    background: rgba(35, 25, 19, 0.96);
+    border: 1px solid #c9a97a;
+    box-shadow: 0 18px 50px rgba(0, 0, 0, 0.55);
+}
+
+body:not(.light) .home-card h1,
+body:not(.light) .home-description {
+    color: #f0e6d3;
+}
+
+body:not(.light) .home-card h1 span {
+    color: #c9a97a;
+}
+
+body:not(.light) .home-subtitle {
+    color: #d6b68a;
+}
+
+body:not(.light) .home-button {
+    background: #650f1c;
+    color: #f0e6d3;
+    border: 1px solid #c9a97a;
+}
+
+body:not(.light) .home-button.secondary {
+    background: transparent;
+}
+
+body:not(.light) .home-button:hover {
+    background: #8b1e2d;
+}
+
+/* LIGHT MODE */
+body.light .home-card {
+    background: rgba(255, 245, 240, 0.94);
+    border: 1px solid #b77b70;
+    box-shadow: 0 15px 40px rgba(91, 41, 43, 0.20);
+}
+
+body.light .home-card h1,
+body.light .home-description {
+    color: #5b292b;
+}
+
+body.light .home-card h1 span {
+    color: #8b1e2d;
+}
+
+body.light .home-subtitle {
+    color: #b77b70;
+}
+
+body.light .home-button {
+    background: #8b1e2d;
+    color: #fff5f0;
+    border: 1px solid #b77b70;
+}
+
+body.light .home-button.secondary {
+    background: transparent;
+    color: #8b1e2d;
+}
+
+body.light .home-button:hover {
+    background: #a43a49;
+    color: white;
+}
+
+/* MOBILE */
+@media (max-width: 600px) {
+    .home-card {
+        padding: 45px 22px;
+    }
+
+    .home-subtitle {
+        font-size: 22px;
+    }
+
+    .home-description {
+        font-size: 15px;
+    }
+}
+</style>
+
+<div class="home-background">
+    <div class="home-card">
+
+        <h1>Fitting <span>Atelier</span></h1>
+
+        <h3 class="home-subtitle">By Faiza Sarker</h3>
+
+        <p class="home-description">
+            Welcome to your personal fashion atelier.
+            Curate your wardrobe, create beautiful outfits,
+            and discover a style that is uniquely yours.
+        </p>
+
+        <div class="home-buttons">
+            <a href="{{ url_for('register') }}" class="home-button">
+                Get Started
+            </a>
+
+            <a href="{{ url_for('login') }}" class="home-button secondary">
+                Log In
+            </a>
+        </div>
+
+    </div>
 </div>
+
 {% endblock %}

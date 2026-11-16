@@ -1,37 +1,279 @@
+
 {% extends 'base.html' %}
+
 {% block content %}
-<div class="container" style="max-width:560px;">
-  <div class="badge">Wardrobe</div>
-  <h1>Add <em>Item</em></h1>
-  <br>
-  <form method="POST">
-    {{ form.hidden_tag() }}
-    <div class="field">
-      {{ form.name.label }}
-      {{ form.name(placeholder="e.g. White Linen Shirt") }}
+
+<style>
+@font-face {
+    font-family: 'PerandoryCondensed';
+    src: url("{{ url_for('static', filename='Perandory-Condensed.otf') }}");
+}
+
+@font-face {
+    font-family: 'PerandoryRegular';
+    src: url("{{ url_for('static', filename='Perandory-Regular.otf') }}");
+}
+
+@font-face {
+    font-family: 'PerandorySemiCondensed';
+    src: url("{{ url_for('static', filename='Perandory-Semi-Condensed.otf') }}");
+}
+
+/* PAGE LAYOUT */
+
+.add-background {
+    min-height: calc(100vh - 110px);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 60px 20px;
+}
+
+.add-card {
+    width: 100%;
+    max-width: 650px;
+    padding: 50px 45px;
+    border-radius: 18px;
+    text-align: center;
+    transition: background 0.3s ease;
+}
+
+.add-card h1 {
+    font-family: 'PerandoryCondensed', Georgia, serif;
+    font-size: clamp(55px, 7vw, 85px);
+    font-weight: normal;
+    margin-bottom: 5px;
+}
+
+.add-card h1 span {
+    color: #c9a97a;
+}
+
+.add-subtitle {
+    font-family: 'PerandoryRegular', Georgia, serif;
+    font-size: 25px;
+    margin-bottom: 35px;
+}
+
+/* FORM */
+
+.add-form {
+    text-align: left;
+}
+
+.add-field {
+    margin-bottom: 22px;
+}
+
+.add-field label {
+    display: block;
+    font-family: 'PerandorySemiCondensed', Georgia, serif;
+    font-size: 22px;
+    margin-bottom: 8px;
+}
+
+.add-field input,
+.add-field select {
+    width: 100%;
+    padding: 13px 15px;
+    border-radius: 9px;
+    font-family: Georgia, serif;
+    font-size: 15px;
+    box-sizing: border-box;
+    outline: none;
+}
+
+.add-field select {
+    cursor: pointer;
+}
+
+/* BUTTONS */
+
+.add-submit {
+    width: 100%;
+    padding: 13px;
+    border-radius: 10px;
+    font-family: 'PerandorySemiCondensed', Georgia, serif;
+    font-size: 23px;
+    cursor: pointer;
+    transition: 0.3s;
+    margin-top: 10px;
+}
+
+.add-cancel {
+    display: inline-block;
+    margin-top: 22px;
+    font-family: 'PerandorySemiCondensed', Georgia, serif;
+    font-size: 22px;
+    text-decoration: none;
+}
+
+.add-error {
+    padding: 12px 15px;
+    margin-bottom: 18px;
+    border-radius: 8px;
+    background: rgba(212,75,75,0.12);
+    border: 1px solid #d44b4b;
+    color: #d44b4b;
+    font-size: 14px;
+    text-align: left;
+}
+
+/* DARK MODE */
+
+body:not(.light) .add-card {
+    background: rgba(35,25,19,0.96);
+    border: 1px solid #c9a97a;
+    box-shadow: 0 18px 50px rgba(0,0,0,0.55);
+}
+
+body:not(.light) .add-card h1,
+body:not(.light) .add-field label {
+    color: #f0e6d3;
+}
+
+body:not(.light) .add-subtitle,
+body:not(.light) .add-cancel {
+    color: #c9a97a;
+}
+
+body:not(.light) .add-field input,
+body:not(.light) .add-field select {
+    background: #f8f1e6;
+    color: #35251d;
+    border: 1px solid #c9a97a;
+}
+
+body:not(.light) .add-submit {
+    background: #650f1c;
+    color: #f0e6d3;
+    border: 1px solid #c9a97a;
+}
+
+body:not(.light) .add-submit:hover {
+    background: #821b2d;
+}
+
+/* LIGHT MODE */
+
+body.light .add-card {
+    background: rgba(255,245,240,0.94);
+    border: 1px solid #b77b70;
+    box-shadow: 0 15px 40px rgba(91,41,43,0.20);
+}
+
+body.light .add-card h1,
+body.light .add-field label {
+    color: #5b292b;
+}
+
+body.light .add-card h1 span,
+body.light .add-cancel {
+    color: #8b1e2d;
+}
+
+body.light .add-subtitle {
+    color: #b77b70;
+}
+
+body.light .add-field input,
+body.light .add-field select {
+    background: #fffaf7;
+    color: #5b292b;
+    border: 1px solid #b77b70;
+}
+
+body.light .add-submit {
+    background: #8b1e2d;
+    color: #fff5f0;
+    border: 1px solid #b77b70;
+}
+
+body.light .add-submit:hover {
+    background: #a72d40;
+}
+
+/* MOBILE */
+
+@media (max-width: 600px) {
+    .add-card {
+        padding: 35px 22px;
+    }
+}
+</style>
+
+<div class="add-background">
+    <div class="add-card">
+
+        <h1>Add <span>Item</span></h1>
+
+        <p class="add-subtitle">
+            Curate your personal wardrobe
+        </p>
+
+        <!-- Validation errors -->
+        {% for field, errors in form.errors.items() %}
+            {% for message in errors %}
+                <div class="add-error">
+                    {{ field }}: {{ message }}
+                </div>
+            {% endfor %}
+        {% endfor %}
+
+        <form method="POST" class="add-form">
+
+            {{ form.hidden_tag() }}
+
+            <div class="add-field">
+                {{ form.name.label }}
+                {{ form.name(
+                    placeholder="e.g. White Linen Shirt"
+                ) }}
+            </div>
+
+            <div class="add-field">
+                {{ form.brand_id.label }}
+                {{ form.brand_id() }}
+            </div>
+
+            <div class="add-field">
+                {{ form.category_id.label }}
+                {{ form.category_id() }}
+            </div>
+
+            <div class="add-field">
+                {{ form.color.label }}
+                {{ form.color(
+                    placeholder="e.g. White"
+                ) }}
+            </div>
+
+            <div class="add-field">
+                {{ form.size.label }}
+                {{ form.size() }}
+            </div>
+
+            <div class="add-field">
+                {{ form.price.label }}
+                {{ form.price(
+                    placeholder="e.g. 29.99",
+                    min="0",
+                    step="0.01"
+                ) }}
+            </div>
+
+            {{ form.submit(
+                class="add-submit",
+                value="Add to Wardrobe"
+            ) }}
+
+        </form>
+
+        <a href="{{ url_for('wardrobe') }}" class="add-cancel">
+            Cancel &amp; Return to Wardrobe
+        </a>
+
     </div>
-    <div class="field">
-      {{ form.brand_id.label }}
-      {{ form.brand_id() }}
-    </div>
-    <div class="field">
-      {{ form.category_id.label }}
-      {{ form.category_id() }}
-    </div>
-    <div class="field">
-      {{ form.color.label }}
-      {{ form.color(placeholder="e.g. White") }}
-    </div>
-    <div class="field">
-      {{ form.size.label }}
-      {{ form.size() }}
-    </div>
-    <div class="field">
-      {{ form.price.label }}
-      {{ form.price(placeholder="e.g. 29.99") }}
-    </div>
-    {{ form.submit(class="btn btn-gold") }}
-    <a href="{{ url_for('wardrobe') }}" class="btn" style="margin-left:12px;">Cancel</a>
-  </form>
 </div>
+
 {% endblock %}

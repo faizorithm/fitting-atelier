@@ -1,0 +1,589 @@
+
+{% extends 'base.html' %}
+
+{% block content %}
+
+<style>
+@font-face {
+    font-family: 'PerandoryCondensed';
+    src: url("{{ url_for('static', filename='Perandory-Condensed.otf') }}");
+}
+
+@font-face {
+    font-family: 'PerandoryRegular';
+    src: url("{{ url_for('static', filename='Perandory-Regular.otf') }}");
+}
+
+@font-face {
+    font-family: 'PerandorySemiCondensed';
+    src: url("{{ url_for('static', filename='Perandory-Semi-Condensed.otf') }}");
+}
+
+/* PAGE LAYOUT */
+
+.ai-background {
+    min-height: calc(100vh - 110px);
+    padding: 60px 20px;
+    display: flex;
+    justify-content: center;
+}
+
+.ai-container {
+    width: 100%;
+    max-width: 1050px;
+    min-width: 0;
+}
+
+.ai-card {
+    padding: 50px 45px;
+    border-radius: 20px;
+    text-align: center;
+    min-width: 0;
+}
+
+.ai-title {
+    font-family: 'PerandoryCondensed', Georgia, serif;
+    font-size: clamp(42px, 6vw, 78px);
+    font-weight: normal;
+    line-height: 1.1;
+    margin: 0 0 15px;
+    overflow-wrap: anywhere;
+}
+
+.ai-subtitle {
+    font-family: 'PerandoryRegular', Georgia, serif;
+    font-size: clamp(19px, 3vw, 28px);
+    margin-bottom: 35px;
+}
+
+/* REQUEST FORM */
+
+.ai-form {
+    max-width: 850px;
+    margin: 0 auto;
+}
+
+.ai-form textarea {
+    display: block;
+    width: 100%;
+    min-height: 130px;
+    padding: 18px;
+    border-radius: 12px;
+    box-sizing: border-box;
+    font-family: Georgia, serif;
+    font-size: 16px;
+    line-height: 1.6;
+    resize: vertical;
+    outline: none;
+}
+
+.ai-submit {
+    margin-top: 25px;
+    padding: 14px 40px;
+    border-radius: 10px;
+    font-family: 'PerandorySemiCondensed', Georgia, serif;
+    font-size: 24px;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+/* RESULTS */
+
+.ai-results {
+    margin-top: 55px;
+    text-align: left;
+}
+
+.ai-results-title {
+    font-family: 'PerandoryCondensed', Georgia, serif;
+    font-size: clamp(40px, 5vw, 62px);
+    font-weight: normal;
+    text-align: center;
+    margin-bottom: 15px;
+}
+
+.ai-results-subtitle {
+    font-family: 'PerandoryRegular', Georgia, serif;
+    font-size: 22px;
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.ai-outfit-explanation {
+    padding: 22px 25px;
+    border-radius: 12px;
+    font-family: Georgia, serif;
+    font-size: 15px;
+    line-height: 1.8;
+    margin-bottom: 35px;
+}
+
+/* OUTFIT GRID */
+
+.ai-outfit-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 22px;
+}
+
+.ai-item {
+    padding: 28px;
+    border-radius: 15px;
+    min-width: 0;
+}
+
+.ai-category {
+    font-family: 'PerandorySemiCondensed', Georgia, serif;
+    font-size: 17px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    margin-bottom: 12px;
+}
+
+.ai-item h3 {
+    font-family: 'PerandoryRegular', Georgia, serif;
+    font-size: 32px;
+    font-weight: normal;
+    margin: 0 0 18px;
+    overflow-wrap: anywhere;
+}
+
+.ai-item-details {
+    font-family: Georgia, serif;
+    font-size: 14px;
+    line-height: 1.8;
+}
+
+.ai-item-details p {
+    margin: 5px 0;
+}
+
+/* SIMILARITY SCORE */
+
+.ai-score {
+    margin-top: 25px;
+    padding-top: 18px;
+}
+
+.ai-score-label {
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+    align-items: center;
+    font-family: Georgia, serif;
+    font-size: 14px;
+    margin-bottom: 12px;
+}
+
+.ai-score-label strong {
+    font-size: 17px;
+}
+
+.ai-score-bar {
+    width: 100%;
+    height: 9px;
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+.ai-score-fill {
+    height: 100%;
+    border-radius: 10px;
+}
+
+.ai-score-explanation {
+    font-family: Georgia, serif;
+    font-size: 13px;
+    line-height: 1.7;
+    margin-top: 14px;
+    opacity: 0.85;
+}
+
+/* EXPLANATION SECTION */
+
+.ai-how-it-works {
+    margin-top: 35px;
+    padding: 25px;
+    border-radius: 14px;
+}
+
+.ai-how-it-works h3 {
+    font-family: 'PerandoryRegular', Georgia, serif;
+    font-size: 30px;
+    font-weight: normal;
+    margin: 0 0 15px;
+}
+
+.ai-how-it-works p {
+    font-family: Georgia, serif;
+    font-size: 14px;
+    line-height: 1.8;
+    margin-bottom: 12px;
+}
+
+/* MISSING ITEMS */
+
+.ai-missing {
+    padding: 25px;
+    border-radius: 14px;
+    margin-top: 25px;
+}
+
+.ai-missing h3 {
+    font-family: 'PerandoryRegular', Georgia, serif;
+    font-size: 29px;
+    font-weight: normal;
+    margin: 0 0 12px;
+}
+
+.ai-missing p {
+    font-family: Georgia, serif;
+    font-size: 15px;
+    line-height: 1.7;
+}
+
+/* EMPTY STATE */
+
+.ai-empty {
+    margin-top: 30px;
+    font-family: Georgia, serif;
+    font-size: 16px;
+    line-height: 1.8;
+}
+
+.ai-empty a {
+    text-decoration: underline;
+}
+
+/* DARK MODE */
+
+body:not(.light) .ai-card {
+    background: rgba(35, 25, 19, 0.96);
+    border: 1px solid #c9a97a;
+    color: #f0e6d3;
+    box-shadow: 0 18px 50px rgba(0,0,0,0.45);
+}
+
+body:not(.light) .ai-subtitle,
+body:not(.light) .ai-results-subtitle,
+body:not(.light) .ai-category {
+    color: #c9a97a;
+}
+
+body:not(.light) .ai-form textarea {
+    background: #fffaf7;
+    border: 1px solid #c9a97a;
+    color: #35251d;
+}
+
+body:not(.light) .ai-submit {
+    background: #650f1c;
+    border: 1px solid #c9a97a;
+    color: #f0e6d3;
+}
+
+body:not(.light) .ai-submit:hover {
+    background: #821b2d;
+}
+
+body:not(.light) .ai-item,
+body:not(.light) .ai-outfit-explanation,
+body:not(.light) .ai-how-it-works,
+body:not(.light) .ai-missing {
+    background: #35251d;
+    border: 1px solid #c9a97a;
+    color: #f0e6d3;
+}
+
+body:not(.light) .ai-score {
+    border-top: 1px solid #84694d;
+}
+
+body:not(.light) .ai-score-bar {
+    background: #49372b;
+}
+
+body:not(.light) .ai-score-fill {
+    background: #c9a97a;
+}
+
+body:not(.light) .ai-empty a {
+    color: #c9a97a;
+}
+
+/* LIGHT MODE */
+
+body.light .ai-card {
+    background: rgba(255, 245, 240, 0.95);
+    border: 1px solid #b77b70;
+    color: #5b292b;
+    box-shadow: 0 15px 40px rgba(91,41,43,0.20);
+}
+
+body.light .ai-subtitle,
+body.light .ai-results-subtitle,
+body.light .ai-category {
+    color: #8b1e2d;
+}
+
+body.light .ai-form textarea {
+    background: #fffaf7;
+    border: 1px solid #b77b70;
+    color: #5b292b;
+}
+
+body.light .ai-submit {
+    background: #8b1e2d;
+    border: 1px solid #b77b70;
+    color: #fff5f0;
+}
+
+body.light .ai-submit:hover {
+    background: #a72d40;
+}
+
+body.light .ai-item,
+body.light .ai-outfit-explanation,
+body.light .ai-how-it-works,
+body.light .ai-missing {
+    background: #fffaf7;
+    border: 1px solid #b77b70;
+    color: #5b292b;
+}
+
+body.light .ai-score {
+    border-top: 1px solid #dfb6af;
+}
+
+body.light .ai-score-bar {
+    background: #efd5d0;
+}
+
+body.light .ai-score-fill {
+    background: #8b1e2d;
+}
+
+body.light .ai-empty a {
+    color: #8b1e2d;
+}
+
+/* RESPONSIVE */
+
+@media (max-width: 700px) {
+    .ai-card {
+        padding: 35px 20px;
+    }
+
+    .ai-outfit-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .ai-item {
+        padding: 22px;
+    }
+
+    .ai-submit {
+        width: 100%;
+    }
+}
+</style>
+
+<div class="ai-background">
+    <div class="ai-container">
+        <div class="ai-card">
+
+            <h1 class="ai-title">
+                AI Style Recommendations
+            </h1>
+
+            <p class="ai-subtitle">
+                Discover what to wear from your own wardrobe
+            </p>
+
+            <!-- USER REQUEST -->
+
+            <form method="POST" class="ai-form">
+
+                <textarea
+                    name="user_request"
+                    placeholder="Describe your occasion or style... e.g. I need a professional outfit for an interview"
+                    maxlength="500"
+                    required
+                >{{ user_request }}</textarea>
+
+                <button type="submit" class="ai-submit">
+                    Find My Style
+                </button>
+
+            </form>
+
+            <!-- COMPLETE OUTFIT -->
+
+            {% if outfit_result and outfit_result.outfit %}
+
+            <div class="ai-results">
+
+                <h2 class="ai-results-title">
+                    Your AI-Curated Outfit
+                </h2>
+
+                <p class="ai-results-subtitle">
+                    A personalized look from your own closet
+                </p>
+
+                <div class="ai-outfit-explanation">
+                    {{ outfit_result.explanation }}
+                </div>
+
+                <div class="ai-outfit-grid">
+
+                    {% for result in outfit_result.outfit %}
+
+                    <div class="ai-item">
+
+                        <div class="ai-category">
+                            {{ result.item.category_name }}
+                        </div>
+
+                        <h3>
+                            {{ result.item.clothing_item_name }}
+                        </h3>
+
+                        <div class="ai-item-details">
+
+                            <p>
+                                <strong>Color:</strong>
+                                {{ result.item.clothing_item_color or 'Not specified' }}
+                            </p>
+
+                            <p>
+                                <strong>Brand:</strong>
+                                {{ result.item.brand_name }}
+                            </p>
+
+                            {% if result.item.clothing_item_size %}
+                            <p>
+                                <strong>Size:</strong>
+                                {{ result.item.clothing_item_size }}
+                            </p>
+                            {% endif %}
+
+                        </div>
+
+                        <div class="ai-score">
+
+                            <div class="ai-score-label">
+                                <span>Cosine Similarity</span>
+
+                                <strong>
+                                    {{ "%.4f"|format(result.score) }}
+                                </strong>
+                            </div>
+
+                            <div class="ai-score-bar">
+                                <div
+                                    class="ai-score-fill"
+                                    style="width: {{ ([0, result.score * 100, 100] | sort)[1] }}%;">
+                                </div>
+                            </div>
+
+                            <p class="ai-score-explanation">
+                                This item was selected from the
+                                {{ result.item.category_name }}
+                                category based on its semantic
+                                similarity to your request.
+                            </p>
+
+                        </div>
+
+                    </div>
+
+                    {% endfor %}
+
+                </div>
+
+                <!-- MISSING PIECES -->
+
+                {% if outfit_result.missing %}
+
+                <div class="ai-missing">
+
+                    <h3>Missing Wardrobe Pieces</h3>
+
+                    <p>
+                        Your wardrobe does not currently have
+                        an item in the following categories:
+                        <strong>
+                            {{ outfit_result.missing | join(', ') }}
+                        </strong>.
+                    </p>
+
+                    <p>
+                        You can add these pieces to create
+                        a more complete outfit.
+                    </p>
+
+                </div>
+
+                {% endif %}
+
+                <!-- EXPLAIN THE AI -->
+
+                <div class="ai-how-it-works">
+
+                    <h3>How Fitting Atelier Chooses Your Outfit</h3>
+
+                    <p>
+                        Fitting Atelier uses a Hugging Face
+                        Sentence Transformer to convert your
+                        style request and wardrobe descriptions
+                        into numerical embeddings.
+                    </p>
+
+                    <p>
+                        It calculates cosine similarity to
+                        compare their semantic meanings,
+                        then selects relevant clothing from
+                        different wardrobe categories.
+                    </p>
+
+                    <p>
+                        A higher similarity score means the
+                        clothing description is more closely
+                        aligned with your request. These scores
+                        are not percentages, confidence levels,
+                        or probabilities.
+                    </p>
+
+                    <p>
+                        The current outfit builder combines
+                        semantic similarity with category-based
+                        rules. It does not yet fully evaluate
+                        color coordination, fit, or occasion
+                        appropriateness.
+                    </p>
+
+                </div>
+
+            </div>
+
+            {% elif user_request %}
+
+            <div class="ai-empty">
+                <p>
+                    No wardrobe items found.
+                    Add clothing to your wardrobe first.
+                </p>
+
+                <a href="{{ url_for('add_item') }}">
+                    + Add Clothing Item
+                </a>
+            </div>
+
+            {% endif %}
+
+        </div>
+    </div>
+</div>
+
+{% endblock %}

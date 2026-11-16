@@ -1,25 +1,248 @@
+
 {% extends 'base.html' %}
+
 {% block content %}
-<div class="container" style="max-width:480px;">
-  <div class="badge">Create Account</div>
-  <h1>Register</h1>
-  <br>
-  <form method="POST">
-    {{ form.hidden_tag() }}
-    <div class="field">
-      {{ form.username.label }}
-      {{ form.username(placeholder="e.g. faiza") }}
+
+<style>
+@font-face {
+    font-family: 'PerandoryCondensed';
+    src: url("{{ url_for('static', filename='Perandory-Condensed.otf') }}");
+}
+
+@font-face {
+    font-family: 'PerandoryRegular';
+    src: url("{{ url_for('static', filename='Perandory-Regular.otf') }}");
+}
+
+@font-face {
+    font-family: 'PerandorySemiCondensed';
+    src: url("{{ url_for('static', filename='Perandory-Semi-Condensed.otf') }}");
+}
+
+/* REGISTER LAYOUT */
+.register-background {
+    min-height: calc(100vh - 110px);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 60px 20px;
+}
+
+.register-card {
+    width: 100%;
+    max-width: 560px;
+    padding: 50px 45px;
+    border-radius: 18px;
+    text-align: center;
+    transition: background 0.3s ease, color 0.3s ease;
+}
+
+.register-card h1 {
+    font-family: 'PerandoryCondensed', Georgia, serif;
+    font-size: clamp(55px, 7vw, 85px);
+    font-weight: normal;
+    margin: 0 0 5px;
+}
+
+.register-subtitle {
+    font-family: 'PerandoryRegular', Georgia, serif;
+    font-size: 25px;
+    font-weight: normal;
+    margin: 0 0 35px;
+}
+
+.register-form {
+    text-align: left;
+}
+
+.register-form .field {
+    margin-bottom: 22px;
+}
+
+.register-form label {
+    display: block;
+    font-family: 'PerandorySemiCondensed', Georgia, serif;
+    font-size: 22px;
+    margin-bottom: 8px;
+}
+
+.register-form input:not([type="hidden"]):not([type="submit"]) {
+    width: 100%;
+    padding: 13px 15px;
+    border-radius: 9px;
+    font-family: Georgia, serif;
+    font-size: 15px;
+    box-sizing: border-box;
+    outline: none;
+}
+
+.register-form input[type="submit"] {
+    width: 100%;
+    padding: 13px;
+    margin-top: 10px;
+    border-radius: 10px;
+    font-family: 'PerandorySemiCondensed', Georgia, serif;
+    font-size: 23px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.register-form input[type="submit"]:hover {
+    transform: translateY(-2px);
+}
+
+.register-login {
+    margin-top: 28px;
+    font-family: Georgia, serif;
+    font-size: 15px;
+}
+
+.register-login a {
+    font-family: 'PerandorySemiCondensed', Georgia, serif;
+    font-size: 22px;
+    text-decoration: none;
+}
+
+.field-error {
+    font-size: 13px;
+    color: #d44b4b;
+    margin-top: 6px;
+}
+
+/* DARK MODE */
+body:not(.light) .register-card {
+    background: rgba(35, 25, 19, 0.96);
+    border: 1px solid #c9a97a;
+    box-shadow: 0 18px 50px rgba(0,0,0,0.55);
+}
+
+body:not(.light) .register-card h1,
+body:not(.light) .register-form label,
+body:not(.light) .register-login {
+    color: #f0e6d3;
+}
+
+body:not(.light) .register-subtitle,
+body:not(.light) .register-login a {
+    color: #c9a97a;
+}
+
+body:not(.light) .register-form input:not([type="submit"]) {
+    background: #f0e6d3;
+    color: #2a1f14;
+    border: 1px solid #c9a97a;
+}
+
+body:not(.light) .register-form input[type="submit"] {
+    background: #650f1c;
+    color: #f0e6d3;
+    border: 1px solid #c9a97a;
+}
+
+body:not(.light) .register-form input[type="submit"]:hover {
+    background: #8b1e2d;
+}
+
+/* LIGHT MODE */
+body.light .register-card {
+    background: rgba(255,245,240,0.94);
+    border: 1px solid #b77b70;
+    box-shadow: 0 15px 40px rgba(91,41,43,0.20);
+}
+
+body.light .register-card h1,
+body.light .register-form label,
+body.light .register-login {
+    color: #5b292b;
+}
+
+body.light .register-subtitle {
+    color: #b77b70;
+}
+
+body.light .register-login a {
+    color: #8b1e2d;
+}
+
+body.light .register-form input:not([type="submit"]) {
+    background: #ffffff;
+    color: #5b292b;
+    border: 1px solid #b77b70;
+}
+
+body.light .register-form input[type="submit"] {
+    background: #8b1e2d;
+    color: #fff5f0;
+    border: 1px solid #b77b70;
+}
+
+body.light .register-form input[type="submit"]:hover {
+    background: #a43a49;
+}
+body:not(.light) .register-card h1 span {
+    color: #c9a97a;
+}
+
+body.light .register-card h1 span {
+    color: #8b1e2d;
+}
+/* MOBILE */
+@media (max-width: 600px) {
+    .register-card {
+        padding: 35px 22px;
+    }
+
+    .register-subtitle {
+        font-size: 22px;
+    }
+}
+</style>
+
+<div class="register-background">
+    <div class="register-card">
+
+        <h1>Create <span>Account</span></h1>
+        <h3 class="register-subtitle">Join Fitting Atelier</h3>
+
+        <form method="POST" class="register-form">
+            {{ form.hidden_tag() }}
+
+            <div class="field">
+                {{ form.username.label }}
+                {{ form.username(placeholder="e.g. faiza") }}
+
+                {% for error in form.username.errors %}
+                    <p class="field-error">{{ error }}</p>
+                {% endfor %}
+            </div>
+
+            <div class="field">
+                {{ form.email.label }}
+                {{ form.email(placeholder="your@email.com") }}
+
+                {% for error in form.email.errors %}
+                    <p class="field-error">{{ error }}</p>
+                {% endfor %}
+            </div>
+
+            <div class="field">
+                {{ form.password.label }}
+                {{ form.password(placeholder="••••••••") }}
+
+                {% for error in form.password.errors %}
+                    <p class="field-error">{{ error }}</p>
+                {% endfor %}
+            </div>
+
+            {{ form.submit() }}
+        </form>
+
+        <div class="register-login">
+            Already have an account?
+            <a href="{{ url_for('login') }}">Log In</a>
+        </div>
+
     </div>
-    <div class="field">
-      {{ form.email.label }}
-      {{ form.email(placeholder="your@email.com") }}
-    </div>
-    <div class="field">
-      {{ form.password.label }}
-      {{ form.password(placeholder="••••••••") }}
-    </div>
-    {{ form.submit(class="btn btn-gold") }}
-  </form>
-  <p style="margin-top:20px; font-size:13px; color:#7a6a5a;">Already have an account? <a href="{{ url_for('login') }}" style="color:#7a3b1e;">Log in</a></p>
 </div>
+
 {% endblock %}

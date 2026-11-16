@@ -1,21 +1,274 @@
 {% extends 'base.html' %}
+
 {% block content %}
-<div class="container" style="max-width:480px;">
-  <div class="badge">Welcome Back</div>
-  <h1>Log In</h1>
-  <br>
-  <form method="POST">
-    {{ form.hidden_tag() }}
-    <div class="field">
-      {{ form.email.label }}
-      {{ form.email(placeholder="your@email.com") }}
+
+<style>
+@font-face {
+    font-family: 'PerandoryCondensed';
+    src: url("{{ url_for('static', filename='Perandory-Condensed.otf') }}");
+}
+
+@font-face {
+    font-family: 'PerandoryRegular';
+    src: url("{{ url_for('static', filename='Perandory-Regular.otf') }}");
+}
+
+@font-face {
+    font-family: 'PerandorySemiCondensed';
+    src: url("{{ url_for('static', filename='Perandory-Semi-Condensed.otf') }}");
+}
+
+/* PAGE LAYOUT */
+.login-background {
+    min-height: calc(100vh - 110px);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 60px 20px;
+}
+
+.login-card {
+    width: 100%;
+    max-width: 600px;
+    padding: 50px 45px;
+    border-radius: 18px;
+    text-align: center;
+    transition: background 0.3s ease;
+}
+
+.login-card h1 {
+    font-family: 'PerandoryCondensed', Georgia, serif;
+    font-size: clamp(55px, 7vw, 85px);
+    font-weight: normal;
+    margin-bottom: 5px;
+}
+
+.login-card h1 span {
+    color: #c9a97a;
+}
+
+.login-subtitle {
+    font-family: 'PerandoryRegular', Georgia, serif;
+    font-size: 25px;
+    margin-bottom: 35px;
+}
+
+/* FORM */
+.login-form {
+    text-align: left;
+}
+
+.login-form p {
+    margin-bottom: 22px;
+}
+
+.login-form label {
+    display: block;
+    font-family: 'PerandorySemiCondensed', Georgia, serif;
+    font-size: 22px;
+    margin-bottom: 8px;
+}
+
+.login-form input[type="email"],
+.login-form input[type="password"],
+.login-form input[type="text"] {
+    width: 100%;
+    padding: 13px 15px;
+    border-radius: 9px;
+    font-size: 15px;
+    box-sizing: border-box;
+    outline: none;
+}
+
+.login-form input[type="submit"] {
+    width: 100%;
+    padding: 13px;
+    border-radius: 10px;
+    font-family: 'PerandorySemiCondensed', Georgia, serif;
+    font-size: 23px;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.login-register {
+    margin-top: 25px;
+}
+
+.login-register a {
+    font-family: 'PerandorySemiCondensed', Georgia, serif;
+    font-size: 23px;
+    text-decoration: none;
+}
+
+/* ERROR MESSAGES */
+.login-error {
+    padding: 12px 15px;
+    margin-bottom: 20px;
+    border-radius: 8px;
+    background: rgba(212, 75, 75, 0.12);
+    border: 1px solid #d44b4b;
+    color: #d44b4b;
+    font-family: Georgia, serif;
+    font-size: 14px;
+    text-align: left;
+}
+
+.login-success {
+    padding: 12px 15px;
+    margin-bottom: 20px;
+    border-radius: 8px;
+    background: rgba(80, 150, 100, 0.12);
+    border: 1px solid #579568;
+    color: #579568;
+    font-family: Georgia, serif;
+    font-size: 14px;
+    text-align: left;
+}
+
+/* DARK MODE */
+body:not(.light) .login-card {
+    background: rgba(35, 25, 19, 0.96);
+    border: 1px solid #c9a97a;
+    box-shadow: 0 18px 50px rgba(0, 0, 0, 0.55);
+}
+
+body:not(.light) .login-card h1,
+body:not(.light) .login-form label {
+    color: #f0e6d3;
+}
+
+body:not(.light) .login-subtitle,
+body:not(.light) .login-register a {
+    color: #c9a97a;
+}
+
+body:not(.light) .login-form input {
+    background: #f8f1e6;
+    color: #35251d;
+    border: 1px solid #c9a97a;
+}
+
+body:not(.light) .login-form input[type="submit"] {
+    background: #650f1c;
+    color: #f0e6d3;
+    border: 1px solid #c9a97a;
+}
+
+body:not(.light) .login-form input[type="submit"]:hover {
+    background: #821b2d;
+}
+
+/* LIGHT MODE */
+body.light .login-card {
+    background: rgba(255, 245, 240, 0.94);
+    border: 1px solid #b77b70;
+    box-shadow: 0 15px 40px rgba(91, 41, 43, 0.20);
+}
+
+body.light .login-card h1,
+body.light .login-form label {
+    color: #5b292b;
+}
+
+body.light .login-card h1 span,
+body.light .login-register a {
+    color: #8b1e2d;
+}
+
+body.light .login-subtitle {
+    color: #b77b70;
+}
+
+body.light .login-form input {
+    background: #fffaf7;
+    color: #5b292b;
+    border: 1px solid #b77b70;
+}
+
+body.light .login-form input[type="submit"] {
+    background: #8b1e2d;
+    color: #fff5f0;
+    border: 1px solid #b77b70;
+}
+
+body.light .login-form input[type="submit"]:hover {
+    background: #a72d40;
+}
+
+/* MOBILE */
+@media (max-width: 600px) {
+    .login-card {
+        padding: 35px 22px;
+    }
+}
+</style>
+
+<div class="login-background">
+    <div class="login-card">
+
+        <h1>Log <span>In</span></h1>
+        <h3 class="login-subtitle">Fitting Atelier</h3>
+
+        <!-- General error passed from Flask -->
+        {% if error %}
+            <div class="login-error">
+                {{ error }}
+            </div>
+        {% endif %}
+
+        <!-- Flask-WTF validation errors -->
+        {% for field, errors in form.errors.items() %}
+            {% for message in errors %}
+                <div class="login-error">
+                    {{ field }}: {{ message }}
+                </div>
+            {% endfor %}
+        {% endfor %}
+
+        <!-- Flash messages -->
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% for category, message in messages %}
+                <div class="{% if category == 'success' %}login-success{% else %}login-error{% endif %}">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        {% endwith %}
+
+        <form method="POST" class="login-form">
+
+            <!-- CSRF protection -->
+            {{ form.hidden_tag() }}
+
+            <p>
+                {{ form.email.label }}
+                {{ form.email(
+                    type="email",
+                    placeholder="Enter your email",
+                    autocomplete="email"
+                ) }}
+            </p>
+
+            <p>
+                {{ form.password.label }}
+                {{ form.password(
+                    placeholder="Enter your password",
+                    autocomplete="current-password"
+                ) }}
+            </p>
+
+            <p>
+                {{ form.submit(value="Log In") }}
+            </p>
+
+        </form>
+
+        <div class="login-register">
+            <a href="{{ url_for('register') }}">
+                Create New Account
+            </a>
+        </div>
+
     </div>
-    <div class="field">
-      {{ form.password.label }}
-      {{ form.password(placeholder="••••••••") }}
-    </div>
-    {{ form.submit(class="btn btn-gold") }}
-  </form>
-  <p style="margin-top:20px; font-size:13px; color:#7a6a5a;">Don't have an account? <a href="{{ url_for('register') }}" style="color:#7a3b1e;">Register</a></p>
 </div>
+
 {% endblock %}
